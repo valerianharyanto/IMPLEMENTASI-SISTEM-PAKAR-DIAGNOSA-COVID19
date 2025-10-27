@@ -1,0 +1,34 @@
+{
+  "symptoms": {
+    "GJL01": "Apakah Anda mengalami demam (suhu tubuh di atas 37,5°C)?",
+    "GJL02": "Apakah Anda mengalami batuk kering secara terus menerus?",
+    "GJL03": "Apakah Anda merasa sesak napas atau kesulitan bernapas?",
+    "GJL04": "Apakah Anda merasa kelelahan tanpa sebab yang jelas?",
+    "GJL05": "Apakah Anda kehilangan kemampuan mencium bau (anosmia)?",
+    "GJL06": "Apakah Anda kehilangan kemampuan merasakan makanan (ageusia)?",
+    "GJL07": "Apakah Anda mengalami sakit tenggorokan?",
+    "GJL08": "Apakah Anda mengalami sakit kepala?",
+    "GJL09": "Apakah Anda mengalami nyeri otot atau pegal-pegal?",
+    "GJL10": "Apakah Anda mengalami pilek atau hidung tersumbat?",
+    "GJL11": "Apakah Anda mengalami mual atau muntah?",
+    "GJL12": "Apakah Anda mengalami diare?",
+    "GJL13": "Apakah Anda memiliki riwayat kontak dengan orang positif COVID-19 dalam 14 hari terakhir?",
+    "GJL14": "Apakah Anda pernah bepergian ke daerah dengan kasus COVID-19 tinggi dalam 14 hari terakhir?",
+    "GJL15": "Apakah saturasi oksigen Anda di bawah 95%?",
+    "GJL16": "Apakah Anda mengalami nyeri dada atau tekanan di dada?",
+    "GJL17": "Apakah Anda mengalami batuk berdarah?",
+    "GJL18": "Apakah Anda mengalami kehilangan nafsu makan?"
+  },
+  "diseases": {
+    "PY01": "COVID-19 Ringan",
+    "PY02": "COVID-19 Sedang",
+    "PY03": "COVID-19 Berat"
+  },
+  "certainty_terms": {
+    "Tidak": 0.0,
+    "Kemungkinan Tidak": 0.2,
+    "Tidak Tahu": 0.5,
+    "Kemungkinan Iya": 0.8,
+    "Iya": 1.0
+  }
+}

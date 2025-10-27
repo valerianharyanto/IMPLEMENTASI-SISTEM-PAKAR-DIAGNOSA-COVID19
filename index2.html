@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Pakar COVID-19 (Certainty Factor)</title>
+  <script type="module">
+    import { LABELS_JSON, RULES_JSON, loadJSON, diagnose, orderedCodes, indexToCFMap } from "./inference_engine.js";
+
+    let symptoms = {}, certainty = {}, rules = [];
+
+    async function init() {
+      // Load data
+      const labels = await loadJSON(LABELS_JSON);
+      symptoms = labels.symptoms;
+      certainty = indexToCFMap(labels.certainty_terms);
+      rules = await loadJSON(RULES_JSON);
+
+      // Render form pertanyaan
+      const container = document.getElementById("questions");
+      container.innerHTML = "";
+      for (const code of orderedCodes(symptoms)) {
+        const qDiv = document.createElement("div");
+        qDiv.className = "question";
+
+        const label = document.createElement("label");
+        label.textContent = `${code}. ${symptoms[code]}`;
+        qDiv.appendChild(label);
+
+        const select = document.createElement("select");
+        select.id = code;
+        certainty.order.forEach((opt, i) => {
+          const o = document.createElement("option");
+          o.value = certainty.values[i];
+          o.textContent = opt;
+          select.appendChild(o);
+        });
+        qDiv.appendChild(select);
+        container.appendChild(qDiv);
+      }
+    }
+
+    async function onDiagnose() {
+      // Ambil input user
+      const userCF = {};
+      for (const code of Object.keys(symptoms)) {
+        const val = Number(document.getElementById(code).value);
+        userCF[code] = val;
+      }
+
+      const results = diagnose(rules, userCF);
+      const out = document.getElementById("result");
+      out.innerHTML = "<h3>Hasil Diagnosa:</h3>";
+
+      if (!results.length) {
+        out.innerHTML += "<p>Tidak ada indikasi penyakit COVID-19 terdeteksi.</p>";
+        return;
+      }
+
+      results.forEach(([dis, val]) => {
+        out.innerHTML += `<p><b>${dis}</b> → CF = ${(val * 100).toFixed(2)}%</p>`;
+      });
+
+      const [bestDisease, bestCF] = results[0];
+      out.innerHTML += `<h4>Kesimpulan: ${bestDisease} (Keyakinan ${(bestCF * 100).toFixed(1)}%)</h4>`;
+    }
+
+    window.addEventListener("DOMContentLoaded", init);
+    window.onDiagnose = onDiagnose;
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fa;
+      color: #222;
+      margin: 20px auto;
+      max-width: 700px;
+      line-height: 1.5;
+    }
+    h1, h3, h4 { text-align: center; }
+    .question {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sistem Pakar Diagnosa COVID-19</h1>
+  <p>Jawablah setiap pertanyaan berikut berdasarkan kondisi Anda saat ini:</p>
+  <div id="questions"></div>
+  <button onclick="onDiagnose()">Diagnosa Sekarang</button>
+  <div id="result"></div>
+</body>
+</html>
